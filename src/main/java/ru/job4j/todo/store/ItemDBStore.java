@@ -8,7 +8,7 @@ import ru.job4j.todo.model.Item;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 @Repository
 @ThreadSafe
@@ -21,58 +21,47 @@ public class ItemDBStore {
     }
 
     public Item add(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.save(item);
-        session.getTransaction().commit();
-        session.close();
+        transaction(session -> session.save(item));
         return item;
     }
 
     public void update(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.update(item);
-        session.getTransaction().commit();
-        session.close();
+        transaction(session -> {
+            session.update(item);
+            return new Object();
+        });
     }
 
     public List<Item> findAll() {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List result = session.createQuery("from ru.job4j.todo.model.Item").list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return transaction(session -> session.createQuery("from ru.job4j.todo.model.Item").list());
     }
 
     public Item findById(int id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        Item result = session.get(Item.class, id);
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return transaction(session -> session.get(Item.class, id));
     }
 
     public Collection<Item> findByConditionDone(boolean condition) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List result = session.createQuery(
-                "from ru.job4j.todo.model.Item where done = :condition")
-                .setBoolean("condition", condition).list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return transaction(session -> session.createQuery(
+                        "from ru.job4j.todo.model.Item where done = :condition")
+                .setBoolean("condition", condition).list());
     }
 
     public void deleteById(int id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
         Item item = new Item();
         item.setId(id);
-        session.delete(item);
+        transaction(session -> {
+                    session.delete(item);
+                    return new Object();
+                }
+        );
+    }
+
+    private <T> T transaction(final Function<Session, T> command) {
+        final Session session = sf.openSession();
+        session.beginTransaction();
+        T rsl = command.apply(session);
         session.getTransaction().commit();
         session.close();
+        return rsl;
     }
 }
