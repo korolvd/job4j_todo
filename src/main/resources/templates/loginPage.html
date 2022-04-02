@@ -58,28 +58,23 @@
     </nav>
     <div class="row">
         <div class="col">
-            <div class="shadow card">
+            <div class="card">
+                <div class="card-header">
+                    Вход в учетную запись
+                </div>
                 <div class="card-body">
-                    <span th:if="${!item.done}">
-                                <span class="badge badge-primary">В процессе</span>
-                    </span>
-                    <span th:if="${item.done}">
-                                <span class="badge badge-success">Выполнено</span>
-                    </span>
-                    <h5 class="card-title" th:text="${item.name}"/>
-                    <p class="card-subtitle text-muted">
-                        Автор
-                        <span th:text="${item.user.email}"/>
-                        Создано
-                        <span th:text="${#dates.format(item.created, 'dd.MM.yyyy')}"/>
-                    </p>
-                    <p class="card-text" th:text="${item.description}"/>
-                    <form  th:action="@{|/doneTask/${item.id}|}" method="GET">
-                        <span th:if="${!item.done}">
-                            <button type="submit" class="btn btn-outline-success">Завершить</button>
-                        </span>
-                        <button type="submit" class="btn btn-outline-warning" th:formaction="@{|/editTask/${item.id}|}">Редактировать</button>
-                        <button type="submit" class="btn btn-outline-danger" th:formaction="@{|/deleteTask/${item.id}|}">Удалить</button>
+                    <div th:if="${fail}" class="alert alert-danger" role="alert">
+                        Не верный логин или пароль!
+                    </div>
+                    <form th:action="@{/login}" method="POST">
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="0"/>
+                            <label for="email">Почта</label>
+                            <input type="text" class="form-control" id="email" name="email" >
+                            <label for="password">Пароль</label>
+                            <input type="text" class="form-control" id="password" name="password" >
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Отправить</button>
                     </form>
                 </div>
             </div>
