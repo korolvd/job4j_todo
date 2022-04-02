@@ -3,6 +3,7 @@ package ru.job4j.todo.store;
 import net.jcip.annotations.ThreadSafe;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Item;
 
@@ -58,10 +59,16 @@ public class ItemDBStore {
 
     private <T> T transaction(final Function<Session, T> command) {
         final Session session = sf.openSession();
-        session.beginTransaction();
-        T rsl = command.apply(session);
-        session.getTransaction().commit();
-        session.close();
-        return rsl;
+        final Transaction transaction = session.beginTransaction();
+        try {
+            T rsl = command.apply(session);
+            transaction.commit();
+            return rsl;
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
     }
 }
