@@ -100,10 +100,8 @@ public class ItemController {
 
     @GetMapping("/doneTask/{taskId}")
     public String doneItem(@PathVariable("taskId") int id) {
-        Item item = service.findById(id);
-        item.setDone(true);
-        service.update(item);
-        return "redirect:/details/" + item.getId();
+        service.doneById(id);
+        return "redirect:/details/" + id;
     }
 
     @GetMapping("/deleteTask/{taskId}")

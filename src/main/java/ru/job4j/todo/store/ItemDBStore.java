@@ -57,6 +57,14 @@ public class ItemDBStore {
         );
     }
 
+    public void doneById(int id) {
+        transaction(session ->  session.createQuery(
+                    "update ru.job4j.todo.model.Item i set i.done = :done where i.id = :id")
+                    .setParameter("done", true)
+                    .setParameter("id", id)
+                    .executeUpdate());
+    }
+
     private <T> T transaction(final Function<Session, T> command) {
         final Session session = sf.openSession();
         final Transaction transaction = session.beginTransaction();

@@ -42,4 +42,8 @@ public class ItemService {
     public void deleteById(int id) {
         store.deleteById(id);
     }
+
+    public void doneById(int id) {
+        store.doneById(id);
+    }
 }
