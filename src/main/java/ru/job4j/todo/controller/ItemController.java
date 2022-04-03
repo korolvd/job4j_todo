@@ -3,15 +3,13 @@ package ru.job4j.todo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.ItemService;
 
 import javax.servlet.http.HttpSession;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
@@ -78,7 +76,7 @@ public class ItemController {
     public String addItem(@ModelAttribute Item item,
                           @RequestParam(name = "catIds") List<String> idsCat,
                           HttpSession session) {
-        item.setCreated(Date.valueOf(LocalDate.now()));
+        item.setCreated(new Date(System.currentTimeMillis()));
         item.setUser((User) session.getAttribute("user"));
         itemService.add(item, idsCat);
         return "redirect:/index";
