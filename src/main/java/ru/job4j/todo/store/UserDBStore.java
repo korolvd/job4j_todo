@@ -31,12 +31,11 @@ public class UserDBStore {
     }
 
     public Optional<User> findByEmailAndPwd(String email, String password) {
-        List<User> users = transaction(session -> session.createQuery(
+        return transaction(session -> session.createQuery(
                             "from ru.job4j.todo.model.User "
                                     + " where email = :email and password = :password")
                     .setParameter("email", email)
-                    .setParameter("password", password).list());
-        return users.isEmpty() ? Optional.empty() : Optional.ofNullable(users.get(0));
+                    .setParameter("password", password).uniqueResultOptional());
     }
 
     private <T> T transaction(final Function<Session, T> command) {
