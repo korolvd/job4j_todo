@@ -14,3 +14,16 @@ CREATE TABLE IF NOT EXISTS item
     done BOOLEAN,
     user_id INT NOT NULL REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS category
+(
+    id SERIAL PRIMARY KEY,
+    name TEXT
+);
+
+INSERT INTO category(name) VALUES ('Общее');
+INSERT INTO category(name) VALUES ('Образование');
+INSERT INTO category(name) VALUES ('Хобби');
+INSERT INTO category(name) VALUES ('Путешествия');
+INSERT INTO category(name) VALUES ('Дом');
+INSERT INTO category(name) VALUES ('Работа');

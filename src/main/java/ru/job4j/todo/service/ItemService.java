@@ -5,6 +5,7 @@ import ru.job4j.todo.model.Item;
 import ru.job4j.todo.store.ItemDBStore;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ItemService {
@@ -15,8 +16,8 @@ public class ItemService {
         this.store = store;
     }
 
-    public Item add(Item item) {
-        return store.add(item);
+    public Item add(Item item, List<String> idsCat) {
+        return store.add(item, idsCat);
     }
 
     public void update(Item item) {

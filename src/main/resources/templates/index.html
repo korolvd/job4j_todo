@@ -42,15 +42,10 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/showDone}">Выполненные</a>
                 </li>
+                <li class="nav-item" th:if="${user.email != 'Гость'}">
+                    <a class="nav-link" th:href="@{/addPage}">Создать</a>
+                </li>
             </ul>
-            <form th:if="${user.email != 'Гость'}" th:action="@{/newTask}" method="POST" class="form-inline my-2 my-lg-0">
-                <input type="hidden" name="id" value="0"/>
-                <input class="form-control mr-sm-2" type="text" name="name" id="name"
-                       placeholder="Новая задача" aria-label="Новая задача">
-                <input class="form-control mr-sm-2" type="text" name="description" id="description"
-                       placeholder="Описание" aria-label="Описание">
-                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Создать</button>
-            </form>
             <a th:if="${user.email == 'Гость'}" class="nav-item nav-link" th:href="@{/registrationPage}">Регистрация</a>
             <a class="nav-item nav-link" th:if="${user.email == 'Гость'}" th:href="@{/loginPage}">
                 <span th:text="${user.email}"></span>

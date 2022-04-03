@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
 
 import java.util.Collection;
@@ -21,8 +22,14 @@ public class ItemDBStore {
         this.sf = sf;
     }
 
-    public Item add(Item item) {
-        transaction(session -> session.save(item));
+    public Item add(Item item, List<String> idsCat) {
+        transaction(session -> {
+            for (String id : idsCat) {
+                Category category = session.find(Category.class, Integer.parseInt(id));
+                item.addCategory(category);
+            }
+            return session.save(item);
+        });
         return item;
     }
 
@@ -58,11 +65,11 @@ public class ItemDBStore {
     }
 
     public void doneById(int id) {
-        transaction(session ->  session.createQuery(
-                    "update ru.job4j.todo.model.Item i set i.done = :done where i.id = :id")
-                    .setParameter("done", true)
-                    .setParameter("id", id)
-                    .executeUpdate());
+        transaction(session -> session.createQuery(
+                        "update ru.job4j.todo.model.Item i set i.done = :done where i.id = :id")
+                .setParameter("done", true)
+                .setParameter("id", id)
+                .executeUpdate());
     }
 
     private <T> T transaction(final Function<Session, T> command) {
